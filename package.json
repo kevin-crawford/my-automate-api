@@ -4,7 +4,8 @@
   "description": "automate api",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js",
+    "test": "mocha --exit"
   },
   "author": "Kevin Crawford",
   "license": "ISC",
