@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>AutoMate</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" type="text/css" media="screen" href="index.css" />
+	<script src="client.js"></script>
+
+</head>
+
+
+<body>
+	<input type="hidden" id="loggedInUserName" value="">
+	/* NAVIGATION */
+	<div class="top-menu hidden">
+		<nav class="top-navigation" role="navigation">
+			<div class="content">
+				<ul class="links">
+
+					<li class="logo">AutoMate</li>
+					<li><a href="#" id="login">Login</a></li>
+					<li><a href="#" id="SignUp">SignUp</a></li>
+
+				</ul>
+			</div>
+		</nav>
+	</div>
+
+	<div class="background-img">
+		<div class="transparent">
+			<section role="region" class="intro">
+
+				<header role="banner">
+					<h1>AutoMate</h1>
+	
+					<p>
+						AutoMate is intended to help vehicle owners ( cars, recreational vehicles, motorcycles ) track and log their vehicle maintenance in one uniform web application. 
+					</p>
+					<p>
+						Add vehicles and start tracking by adding the most recent vehicle maintenance records and AutoMait will let you know when it is time for your next maintenance for that particular item. Opt in to receive e-mail alerts to be even more up to date!
+					</p>
+
+				</header>
+
+			</section>
+
+			<section class="validation">
+
+				<form>
+					<fieldset>
+						<legend>Sign In</legend>
+						<label for="login-email">Email:</label>
+						<input type="text" id="login-email" name="login-email" value="user@email.com" required>
+						<label for="login-password">Password:</label>
+						<input type="password" id="login-password" name="login-password" value="password123" required>
+						<button role="button" type="submit" id="login-button">Log In</button>
+						<a class="signup-anchor" href="#signup">Sign Up</a>
+					</fieldset>
+				</form>
+
+				<form>
+					<fieldset>
+						<legend>Sign Up</legend>
+						<label for="email">Email:</label>
+						<input type="text" for="email" name="email" required>
+						<label for="name">Name:</label>
+						<input type="text" for="name" name="name" required>
+						<label for="password">Password:</label>
+						<input type="password" id="password" name="password" required>
+						<label for="match-password">Confirm password:</label>
+						<input type="password" id="match-password" name="match-password" required>
+						<button role="button" type="submit" id="signUpButton">Sign Up</button>
+						<a class="login-anchor" href="#login">Sign In</a>
+					</fieldset>
+				</form>
+			</section>
+			
+		</div>
+	</div>
+</body>
+</html>
