@@ -3,7 +3,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const { Vehicle } = require('./vehicles-model');
-const router = express.router();
+const router = express.Router();
 
 const jsonParser = bodyParser.json();
 
@@ -15,3 +15,5 @@ router.get('/garage', (req, res) => {
 	Vehicle
 			.find({ loggedInUserName: req.params.username })
 })
+
+module.exports = router;

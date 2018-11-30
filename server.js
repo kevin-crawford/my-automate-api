@@ -9,11 +9,11 @@ const cors = require('cors');
 
 
 //------------ ROUTER IMPORTS --------------------///
-const { router: usersRouter } = require('./users/users-router');
-const { router: vehiclesRouter } = require('./vehicles/vehicles-router');
+const usersRouter  = require('./users/users-router');
+const vehiclesRouter = require('./vehicles/vehicles-router');
 const { localStrategy, jwtStrategy } = require('./auth/auth-strategy');
-const { router: authRouter } = require('./auth/auth-router');
-const { PORT, DATABASE_URL, CLIENT_ORIGIN } = require('./config');
+const authRouter = require('./auth/auth-router');
+const { PORT, TEST_DATABASE_URL, CLIENT_ORIGIN } = require('./config');
 
 
 mongoose.Promise = global.Promise;
@@ -109,7 +109,7 @@ function closeServer() {
 
 // if server.js is called directly (aka, with `node server.js`)
 if (require.main === module) {
-	runServer(DATABASE_URL).catch(err => console.error(err));
+	runServer(TEST_DATABASE_URL).catch(err => console.error(err));
 }
 
 module.exports = { app, runServer, closeServer };

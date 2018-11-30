@@ -9,7 +9,7 @@ const { JWT_SECRET } = require('../config');
 
 const localStrategy = new LocalStrategy(
 		{
-			usernameField: 'email',
+			emailField: 'email',
 			passwordField: 'password'
 		},
 		(email, password, callback) => {

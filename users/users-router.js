@@ -57,7 +57,7 @@ router.post('/', jsonParser, (req, res) => {
             location: nonTrimmedField
         });
     }
-
+    
     const sizedFields = {
         email: {
             min: 1
@@ -69,6 +69,7 @@ router.post('/', jsonParser, (req, res) => {
             max: 72
         }
     };
+    
     const tooSmallField = Object.keys(sizedFields).find(
         field =>
         'min' in sizedFields[field] &&
@@ -93,11 +94,11 @@ router.post('/', jsonParser, (req, res) => {
         });
     }
 
-    let {email, password, name = ''} = req.body;
+    let { email, password, name = ''} = req.body;
     // email and password come in pre-trimmed, otherwise we throw an error
     // before this
     name = name.trim();
-
+    console.log({email});
     return User.find({email})
         .count()
         .then(count => {
@@ -119,7 +120,9 @@ router.post('/', jsonParser, (req, res) => {
             email,
             password: hash,
             name
-        });
+        },
+    )
+        
     })
         .then(user => {
         console.log(user)
@@ -148,7 +151,7 @@ router.get('/', (req, res) => {
 // POST to login a user
 
 router.post('/login', jsonParser, (req, res) => {
-    const requiredFields = ['username', 'password'];
+    const requiredFields = ['email', 'password'];
     const missingField = requiredFields.find(field => !(field in req.body));
 
     if (missingField) {
@@ -160,13 +163,12 @@ router.post('/login', jsonParser, (req, res) => {
         });
     };
 
-    let { username, password } = req.body;
+    let { email, password } = req.body;
     // console.log(username, password);
     let user;
-    User.findOne({ username })
+    User.findOne({ email })
         .then(_user => {
             user = _user;
-            console.log(user);
             if (!user) {
                 // Return a rejected promise so we break out of the chain of .thens.
                 // Any errors like this will be handled in the catch block.
@@ -201,4 +203,4 @@ router.post('/login', jsonParser, (req, res) => {
 
 
 
-module.exports = { router };
+module.exports = router ;
