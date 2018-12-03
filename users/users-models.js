@@ -6,7 +6,6 @@ const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
 const UserSchema = mongoose.Schema({
-    name: {type: String, default: ''},
     email: {
         type: String,
         required: true,
@@ -16,10 +15,11 @@ const UserSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    vehicle: [{type: mongoose.Schema.Types.ObjectId, ref: 'Vehicle'}]
+    firstName: { type: String, default: '' },
+    lastName: { type: String, default: '' },
 });
 
-UserSchema.methods.serialize = function(password) {
+UserSchema.methods.serialize = function() {
     return {
         email: this.email || '',
         name: this.name || '',

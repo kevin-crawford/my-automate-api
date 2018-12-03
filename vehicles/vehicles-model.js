@@ -8,7 +8,8 @@ const vehicleSchema = mongoose.Schema({
 	model: { type: String, required: true },
 	year: { type: String, required: true },
 	miles: { type: String, required: true },
-	created: { type: Date, default: Date.now, required: true },
+	created: { type: Date, default: Date.now(), required: true },
+	user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 	maintenance: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Maintenance' }]
 });
 
@@ -21,8 +22,14 @@ vehicleSchema.methods.serialize = function() {
 		miles: this.miles,
 		created: this.created,
 		maintenance: this.maintenance,
+		user: this.user
 	}
 }
+
+vehicleSchema.pre('find', function(next) {
+	this.populate('maintenance');
+	next();
+});
 
 const Vehicle = mongoose.model('Vehicle', vehicleSchema);
 

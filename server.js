@@ -11,8 +11,14 @@ const cors = require('cors');
 //------------ ROUTER IMPORTS --------------------///
 const usersRouter  = require('./users/users-router');
 const vehiclesRouter = require('./vehicles/vehicles-router');
+const maintenanceRouter = require('./maintenance/maintenance-router');
+const reminderRouter = require('./maintenance/maintenance-emailer');
+
+//------- AUTH STRATEGIES -----------------------//
 const { localStrategy, jwtStrategy } = require('./auth/auth-strategy');
 const authRouter = require('./auth/auth-router');
+
+//---------------- CONFIG IMPORT ------------------ ///
 const { PORT, TEST_DATABASE_URL, CLIENT_ORIGIN } = require('./config');
 
 
@@ -52,10 +58,13 @@ passport.use(jwtStrategy);
 const jwtAuth = passport.authenticate('jwt', { session: false });
 
 
-// ------- application routers for user/authentication/vehicles--- -----------------  MISSING MAINTENANCE ROUTER    -------------- //
+// ------- application routers for user/authentication/vehicles---------------------------- //
+
 app.use("/users/", usersRouter);
 app.use("/auth/", authRouter);
 app.use("/vehicles/", vehiclesRouter);
+app.use("/maintenance/", maintenanceRouter);
+app.use("/reminders/", reminderRouter);
 
 // catch-all endpoint if client makes request to non-existent endpoint
 app.use("*", (req, res) => {

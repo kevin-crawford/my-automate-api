@@ -3,23 +3,25 @@
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
-const vehicleSchema = mongoose.Schema({
+const maintenanceSchema = mongoose.Schema({
 	kind: { type: String, required: true },
 	currentMiles: { type: String, required: true},
 	note: { type: String, required: true },
 	created: { type: Date, default: Date.now, required: true },
+	reminder: { type: Boolean, default: false}
 });
 
-vehicleSchema.methods.serialize = function() {
+maintenanceSchema.methods.serialize = function() {
 	return {
 		id: this._id,
 		kind: this.kind,
 		currentMiles: this.currentMiles,
 		note: this.note,
 		created: this.created,
+		reminder: this.reminder
 	}
 }
 
-const Vehicle = mongoose.model('Vehicle',vehicleSchema);
+const Maintenance = mongoose.model('Maintenance', maintenanceSchema);
 
-module.exports = Vehicle;
+module.exports = Maintenance;
