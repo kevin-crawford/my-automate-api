@@ -2,14 +2,14 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 
-const { User } = require('./users-models');
+const  User = require('./users-models');
 
 const router = express.Router();
 
 const jsonParser = bodyParser.json();
 
 // Post to register a new user
-router.post('/', jsonParser, (req, res) => {
+router.post('/signup', jsonParser, (req, res) => {
     console.log("got it");
     const requiredFields = ['email', 'password'];
     const missingField = requiredFields.find(field => !(field in req.body));
@@ -23,7 +23,7 @@ router.post('/', jsonParser, (req, res) => {
         });
     }
 
-    const stringFields = ['email', 'password', 'name'];
+    const stringFields = ['email', 'password', 'firstName', 'lastName'];
     const nonStringField = stringFields.find(
         field => field in req.body && typeof req.body[field] !== 'string'
     );
@@ -94,10 +94,11 @@ router.post('/', jsonParser, (req, res) => {
         });
     }
 
-    let { email, password, name = ''} = req.body;
+    let { email, password, firstName = '', lastName = ''} = req.body;
     // email and password come in pre-trimmed, otherwise we throw an error
     // before this
-    name = name.trim();
+    firstName = firstName.trim();
+    lastName = lastName.trim();
     console.log({email});
     return User.find({email})
         .count()
@@ -115,18 +116,22 @@ router.post('/', jsonParser, (req, res) => {
         return User.hashPassword(password);
     })
         .then(hash => {
-        console.log(hash);
+        console.log(email,hash,firstName,lastName);
         return User.create({
             email,
             password: hash,
-            name
+            firstName,
+            lastName
         },
+         err => {
+            console.log(err, 'error');
+        }
     )
         
     })
         .then(user => {
-        console.log(user)
-        return res.status(201).json(user.serialize());
+        console.log(user, 'user')
+        return res.status(201).json(user.serialize(), 'added user');
     })
         .catch(err => {
         // Forward validation errors on to the client, otherwise give a 500

@@ -25,42 +25,44 @@ router.put('/activate/:id', (req, res) => {
 			.catch( err => res.status(500).json({ message: err }));
 
 	// create mail transporter
-	// let transporter = nodemailer.createTransport({
-	// 	service: 'gmail',
-	// 	auth: {
-	// 		user: "automateReminder@gmail.com",
-	// 		pass: "automatepassword123"
-	// 	}
-	// });
+	let transporter = nodemailer.createTransport({
+		service: 'gmail',
+		auth: {
+			user: "automateReminder@gmail.com",
+			pass: "automatepassword123"
+		}
+	});
 
 	// send email at periodic intervals
 	// intervals are determined by type of maintenance item. Oil = every 3 months whipers = 6 to 12 months air filter = ~3 years? Brakes = ~ 12 months Replace Tires = ??? ~ 3-6 years
 	// OR give users the ability to change interval and create uniform range for all maintenance items eg: 1mon/3mon/6mon/ 1yr/3yr/5yr
 
 	//EXAMPLE SCHEDULE
-	// cron.schedule("* * * * Wed", function(){
-	// 	console.log("----------");
-	// 	console.log(" Running CRON job");
-	// 	let mailOptions = {
-	// 		from: "automateReminder@gmail.com",
-	// 		to: "sampleuser@gmail.com",
-	// 		subject: `Reminder to check your ${req.body.kind}`,
-	// 		text: `Hello, this is a friendly reminder that your last ${req.body.kind} maintenance was INSERT TIME SINCE LAST MAINT. This email was sent automatically, please do not respond to this email.`
-	// 	}
+	cron.schedule("* * * * Wed", function(){
+		console.log("----------");
+		console.log(" Running CRON job");
+		let mailOptions = {
+			from: "automateReminder@gmail.com",
+			to: "sampleuser@gmail.com",
+			subject: `Reminder to check your ${req.body.kind}`,
+			text: `Hello, this is a friendly reminder that your last ${req.body.kind} maintenance was INSERT TIME SINCE LAST MAINT. This email was sent automatically, please do not respond to this email.`
+		}
 	// 	// EXAMPLE MAIL SENT
-	// 	transporter.sendMail(mailOptions, function(error, infto) {
-	// 		if(error) {
-	// 			throw error;
-	// 		} else {
-	// 			console.log("email successfully sent!")
-	// 		}
-	// 	});
+	transporter.sendMail(mailOptions, function(error, info) {
+			if(error) {
+				throw error;
+			} else {
+				console.log("email successfully sent!")
+			}
+		});
 
-	// })
+	})
 });
 
 router.put('/deactivate/:id', (req, res) => {
 	const turnOffReminders = { reminder: false }
+
+	console.log('stopping CRON job')
 
 	Maintenance
 			.findByIdAndUpdate(req.params.id, { $set: turnOffReminders }, { $new: true })
