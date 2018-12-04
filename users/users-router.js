@@ -131,7 +131,7 @@ router.post('/signup', jsonParser, (req, res) => {
     })
         .then(user => {
         console.log(user, 'user')
-        return res.status(201).json(user.serialize(), 'added user');
+        return res.status(201).json(user.serialize(), 'added');
     })
         .catch(err => {
         // Forward validation errors on to the client, otherwise give a 500
