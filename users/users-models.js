@@ -15,15 +15,14 @@ const UserSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    firstName: { type: String, default: '' },
-    lastName: { type: String, default: '' },
+    name: { type: String, default: ''}
 });
 
 UserSchema.methods.serialize = function() {
     return {
         email: this.email || '',
         name: this.name || '',
-        id: this.id || ''
+        id: this._id || ''
     };
 };
 
