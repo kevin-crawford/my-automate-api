@@ -2,16 +2,28 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
-const Maintenance = require('./maintenance-model');
-const Vehicle = require('../vehicles/vehicles-model');
+const {Maintenance} = require('./maintenance-model');
+const {Vehicle} = require('../vehicles/vehicles-model');
 const router = express.Router();
 
 const jsonParser = bodyParser.json();
 
 
 // API Call to add maintenance item
-router.post('/add', (req, res) => {
+router.post('/add', jsonParser, (req, res) => {
 	console.log('maintenance object', req.body)
+
+
+	const requiredFields = ['kind', 'currentMiles', 'vehicleId'];
+	for (let i = 0; i < requiredFields.length; i++) {
+		const field = requiredFields[i];
+		if (!(field in req.body)) {
+				const message = `Missing \`${field}\` in request body`;
+				console.error(message);
+				return res.status(400).send(message);
+		}
+	}
+
 	Maintenance
 			.create({
 				kind: req.body.kind,
@@ -88,4 +100,4 @@ router.delete('/delete/:id', (req,res) => {
 		});
 });
 
-module.exports = router;
+module.exports = {router};

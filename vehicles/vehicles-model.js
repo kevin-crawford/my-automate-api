@@ -33,4 +33,4 @@ vehicleSchema.pre('find', function(next) {
 
 const Vehicle = mongoose.model('Vehicle', vehicleSchema);
 
-module.exports = Vehicle;
+module.exports = {Vehicle};

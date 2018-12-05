@@ -11,7 +11,7 @@ const jsonParser = bodyParser.json();
 // Post to register a new user
 router.post('/signup', jsonParser, (req, res) => {
     console.log("got it");
-    const requiredFields = ['email', 'password'];
+    const requiredFields = ['username', 'password', 'email'];
     const missingField = requiredFields.find(field => !(field in req.body));
 
     if (missingField) {
@@ -23,7 +23,7 @@ router.post('/signup', jsonParser, (req, res) => {
         });
     }
 
-    const stringFields = ['email', 'password', 'name'];
+    const stringFields = ['username', 'password', 'firstName', 'lastName'];
     const nonStringField = stringFields.find(
         field => field in req.body && typeof req.body[field] !== 'string'
     );
@@ -44,7 +44,7 @@ router.post('/signup', jsonParser, (req, res) => {
     // trimming them and expecting the user to understand.
     // We'll silently trim the other fields, because they aren't credentials used
     // to log in, so it's less of a problem.
-    const explicityTrimmedFields = ['email', 'password'];
+    const explicityTrimmedFields = ['username', 'password', 'email'];
     const nonTrimmedField = explicityTrimmedFields.find(
         field => req.body[field].trim() !== req.body[field]
     );
@@ -59,6 +59,9 @@ router.post('/signup', jsonParser, (req, res) => {
     }
     
     const sizedFields = {
+        username: {
+            min: 1
+        },
         email: {
             min: 1
         },
@@ -94,12 +97,14 @@ router.post('/signup', jsonParser, (req, res) => {
         });
     }
 
-    let { email, password, name = ''} = req.body;
+    let { username, password, email, firstName = '', lastName = ''} = req.body;
     // email and password come in pre-trimmed, otherwise we throw an error
     // before this
-    name = name.trim();
-    console.log({email});
-    return User.find({email})
+    console.log(username);
+    firstName.trim();
+    lastName.trim();
+    console.log(req.body)
+    return User.find({username})
         .count()
         .then(count => {
         if (count > 0) {
@@ -107,8 +112,8 @@ router.post('/signup', jsonParser, (req, res) => {
             return Promise.reject({
                 code: 422,
                 reason: 'ValidationError',
-                message: 'email already taken',
-                location: 'email'
+                message: 'username already taken',
+                location: 'username'
             });
         }
         // If there is no existing user, hash the password
@@ -116,16 +121,19 @@ router.post('/signup', jsonParser, (req, res) => {
     })
         .then(hash => {
         console.log(hash);
+        console.log('username',username);
         return User.create({
+            username,
             email,
             password: hash,
-            name
+            firstName,
+            lastName
         },
     )
         
     })
         .then(user => {
-        console.log(user)
+        console.log(user,'user')
         return res.status(201).json(user.serialize());
     })
         .catch(err => {
@@ -151,7 +159,7 @@ router.get('/', (req, res) => {
 // POST to login a user
 
 router.post('/login', jsonParser, (req, res) => {
-    const requiredFields = ['email', 'password'];
+    const requiredFields = ['username', 'password'];
     const missingField = requiredFields.find(field => !(field in req.body));
 
     if (missingField) {
@@ -163,10 +171,10 @@ router.post('/login', jsonParser, (req, res) => {
         });
     };
 
-    let { email, password } = req.body;
+    let { username, password } = req.body;
     // console.log(username, password);
     let user;
-    User.findOne({ email })
+    User.findOne({ username })
         .then(_user => {
             user = _user;
             if (!user) {
@@ -203,4 +211,4 @@ router.post('/login', jsonParser, (req, res) => {
 
 
 
-module.exports = router ;
+module.exports = {router} ;

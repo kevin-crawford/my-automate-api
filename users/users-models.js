@@ -6,23 +6,31 @@ const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
 const UserSchema = mongoose.Schema({
-    email: {
+    username: {
         type: String,
         required: true,
         unique: true
+    },
+    email: {
+        type: String,
+        required: true,
+        unique: true,
     },
     password: {
         type: String,
         required: true
     },
-    name: { type: String, default: ''}
+    firstName: { type: String, default: ''},
+    lastName: { type: String, default: ''}
 });
 
 UserSchema.methods.serialize = function() {
     return {
+        username: this.email || '',
         email: this.email || '',
-        name: this.name || '',
-        id: this._id || ''
+        lastName: this.lastName || '',
+        firstName: this.firstName || '',
+        id: this._id 
     };
 };
 
@@ -36,4 +44,4 @@ UserSchema.statics.hashPassword = function(password) {
 
 const User = mongoose.model('User', UserSchema);
 
-module.exports =  { User };
+module.exports =  {User};

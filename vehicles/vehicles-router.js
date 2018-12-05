@@ -2,7 +2,7 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
-const Vehicle = require('./vehicles-model');
+const {Vehicle} = require('./vehicles-model');
 const router = express.Router();
 
 const mongoose = require('mongoose');
@@ -20,9 +20,10 @@ const jsonParser = bodyParser.json();
 // })
 
 // API call to retrieve entire vehicles array for one user
-router.get('/:user', (req, res) => {
+router.get('/:user', jsonParser, (req, res) => {
 	console.log('getting all user vehicles..');
 	console.log(req.params);
+	console.log(ObjectId(req.params.user))
 	
 	Vehicle
 		.find({ user: ObjectId(req.params.user) })
@@ -80,6 +81,7 @@ router.post('/add', jsonParser, (req, res) => {
 					return res.status(400).send(message);
 			}
 		}
+
 		Vehicle
 				.create({
 					brand: req.body.brand,
@@ -96,7 +98,7 @@ router.post('/add', jsonParser, (req, res) => {
 });
 
 // API call to edit vehicle
-router.put('/update/:id', jsonParser, (req, res) => {
+router.put('/edit/:id', jsonParser, (req, res) => {
 	console.log('call edit vehicle');
 	console.log(req.params.id);
 	console.log(req.body.id);
@@ -138,4 +140,4 @@ router.delete('/delete/:id', (req, res) => {
 				.catch(err => res.status(500).json({ message: 'Internal server error' }));
 });
 
-module.exports = router;
+module.exports = {router};

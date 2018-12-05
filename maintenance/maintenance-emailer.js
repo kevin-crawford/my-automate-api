@@ -4,10 +4,10 @@ const cron = require('node-cron');
 let nodemailer = require('nodemailer');
 
 const Maintenance = require('./maintenance-model');
-const router = express.Router();
+const emailRouter = express.Router();
 const jsonParser = bodyParser.json();
 
-router.put('/activate/:id', (req, res) => {
+emailRouter.put('/activate/:id', (req, res) => {
 	// user body used to retrieve email of user
 	// console.log(req.user.body)
 	console.log(req.params)
@@ -59,7 +59,7 @@ router.put('/activate/:id', (req, res) => {
 	// })
 });
 
-router.put('/deactivate/:id', (req, res) => {
+emailRouter.put('/deactivate/:id', (req, res) => {
 	const turnOffReminders = { reminder: false }
 
 	Maintenance
@@ -72,4 +72,4 @@ router.put('/deactivate/:id', (req, res) => {
 			.catch( err => res.status(500).json({ message: err }));
 });
 
-module.exports = router;
+module.exports = {emailRouter};

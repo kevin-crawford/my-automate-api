@@ -1,5 +1,5 @@
 'use strict';
-exports.DATABASE_URL = process.env.DATABASE_URL || 'mongodb://kdxcii:123abc@ds119304.mlab.com:19304/automate';
+exports.DATABASE_URL = process.env.DATABASE_URL || 'mongodb://localhost/automate';
 exports.TEST_DATABASE_URL = process.env.TEST_DATABASE_URL || 'mongodb://localhost/automate';
 exports.PORT = process.env.PORT || 8080;
 exports.JWT_SECRET = process.env.JWT_SECRET;

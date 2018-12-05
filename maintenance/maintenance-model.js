@@ -24,4 +24,4 @@ maintenanceSchema.methods.serialize = function() {
 
 const Maintenance = mongoose.model('Maintenance', maintenanceSchema);
 
-module.exports = Maintenance;
+module.exports = {Maintenance};

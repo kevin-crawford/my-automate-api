@@ -1,31 +1,37 @@
 'use strict'
 require('dotenv').config();
+
 const express = require('express');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
 const passport = require('passport');
-const bodyParser = require('body-parser');
+
+// const bodyParser = require('body-parser');
 const cors = require('cors');
 
 
 //------------ ROUTER IMPORTS --------------------///
-const usersRouter  = require('./users/users-router');
-const vehiclesRouter = require('./vehicles/vehicles-router');
-const maintenanceRouter = require('./maintenance/maintenance-router');
-const reminderRouter = require('./maintenance/maintenance-emailer');
+const { router: usersRouter }  = require('./users');
+const { router: vehiclesRouter} = require('./vehicles');
+const { router: maintenanceRouter, emailRouter } = require('./maintenance');
+// const reminderRouter = require('./maintenance/maintenance-emailer');
 
 //------- AUTH STRATEGIES -----------------------//
-const { localStrategy, jwtStrategy } = require('./auth/auth-strategy');
-const authRouter = require('./auth/auth-router');
-
-//---------------- CONFIG IMPORT ------------------ ///
-const { PORT, TEST_DATABASE_URL, CLIENT_ORIGIN } = require('./config');
-
+const { router: authRouter, localStrategy, jwtStrategy } = require('./auth');
+// const authRouter = require('./auth/auth-router');
 
 mongoose.Promise = global.Promise;
 
+//---------------- CONFIG IMPORT ------------------ ///
+const { PORT, DATABASE_URL, CLIENT_ORIGIN } = require('./config');
+
 //initialize app
 const app = express();
+
+
+passport.use(localStrategy);
+passport.use(jwtStrategy);
+const jwtAuth = passport.authenticate('jwt', { session: false });
 
  // logging
 app.use(morgan('common'));
@@ -47,15 +53,12 @@ app.use(
 	})
 );
 
-app.use(bodyParser.json());
+// app.use(bodyParser.json());
 
 // SERVE STATIC ASSETS
 app.use(express.static("public"));
 
 
-passport.use(localStrategy);
-passport.use(jwtStrategy);
-const jwtAuth = passport.authenticate('jwt', { session: false });
 
 
 // ------- application routers for user/authentication/vehicles---------------------------- //
@@ -64,7 +67,14 @@ app.use("/users/", usersRouter);
 app.use("/auth/", authRouter);
 app.use("/vehicles/", vehiclesRouter);
 app.use("/maintenance/", maintenanceRouter);
-app.use("/reminders/", reminderRouter);
+app.use("/email/", emailRouter);
+
+// A protected endpoint which needs a valid JWT to access it
+app.get('/protected', jwtAuth, (req, res) => {
+  return res.json({
+    data: 'rosebud'
+  });
+});
 
 // catch-all endpoint if client makes request to non-existent endpoint
 app.use("*", (req, res) => {
@@ -118,7 +128,7 @@ function closeServer() {
 
 // if server.js is called directly (aka, with `node server.js`)
 if (require.main === module) {
-	runServer(TEST_DATABASE_URL).catch(err => console.error(err));
+	runServer(DATABASE_URL).catch(err => console.error(err));
 }
 
 module.exports = { app, runServer, closeServer };
