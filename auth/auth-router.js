@@ -8,6 +8,8 @@ const jwt = require('jsonwebtoken');
 const config = require('../config');
 const router = express.Router();
 
+const ObjectId = require('mongodb').ObjectID;
+
 const createAuthToken = function(user) {
 	return jwt.sign({user}, config.JWT_SECRET, {
 		subject: user.username,
@@ -21,8 +23,9 @@ router.use(bodyParser.json());
 
 // USERNAME and password needed to login
 router.post('/login', localAuth, (req, res) => {
+	const userId = ObjectId(req.user._id);
 	const authToken = createAuthToken(req.user.serialize());
-	res.json({authToken});
+	res.json({authToken, userId});
 });
 
 const jwtAuth = passport.authenticate('jwt', { session: false });
