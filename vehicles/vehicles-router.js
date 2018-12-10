@@ -10,14 +10,6 @@ const ObjectId = require('mongodb').ObjectID;
 
 const jsonParser = bodyParser.json();
 
-// response for API call to get vehicles for user
-// router.get('/', (req, res) => {
-// 	console.log('getting vehicles');
-
-// 	console.log(req.params.username);
-// 	Vehicle
-// 			.find({ loggedInUserName: req.params.username })
-// })
 
 // API call to retrieve entire vehicles array for one user
 router.get('/:user', jsonParser, (req, res) => {
@@ -52,7 +44,7 @@ router.get('/vehicle/:id', (req, res) => {
 			});
 });
 
-// repsonse for API call to get one vehicle maintenance object only
+// response for API call to get one vehicle maintenance object only
 // probably should go in the maintenance router
 router.get('/maintenance/:id', (req, res) => {
 	console.log('getting vehicle by ID');
@@ -101,7 +93,7 @@ router.post('/add', jsonParser, (req, res) => {
 router.put('/edit/:id', jsonParser, (req, res) => {
 	console.log('call edit vehicle');
 	console.log(req.params.id);
-	console.log(req.body.id);
+	console.log(req.body);
 
 	if (!(req.params.id && req.body.id && req.params.id === req.body.id)) {
 		const message = (

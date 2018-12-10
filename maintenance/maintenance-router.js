@@ -6,6 +6,10 @@ const {Maintenance} = require('./maintenance-model');
 const {Vehicle} = require('../vehicles/vehicles-model');
 const router = express.Router();
 
+const mongoose = require('mongoose');
+const ObjectId = require('mongodb').ObjectID;
+
+
 const jsonParser = bodyParser.json();
 
 
@@ -29,6 +33,7 @@ router.post('/add', jsonParser, (req, res) => {
 				kind: req.body.kind,
 				currentMiles: req.body.currentMiles,
 				note: req.body.note,
+				vehicle: req.body.vehicleId
 			})
 			.then( (item) => {
 				Vehicle
@@ -48,8 +53,10 @@ router.post('/add', jsonParser, (req, res) => {
 
 // API CALL TO EDIT MAINTENANCE ITEM
 
-router.put('/edit/:id', (req, res) => {
+router.put('/edit/:maintenanceId', jsonParser, (req, res) => {
 	// create new array object of only updated fields
+	console.log(req.body)
+	console.log('edit maintenance request', req.body);
 	const updated = {};
 	const updatableFields = ['kind', 'currentMiles', 'note'];
 	updatableFields.forEach(field => {
@@ -59,7 +66,7 @@ router.put('/edit/:id', (req, res) => {
 	});
 
 	Maintenance
-			.findByIdAndUpdate(req.params.id, { $set: updated }, { new: true })
+			.findByIdAndUpdate(req.params.maintenanceId, { $set: updated }, { new: true })
 			.then( updatedItem => {
 				res.status(201).json({
 					kind: updatedItem.kind,
