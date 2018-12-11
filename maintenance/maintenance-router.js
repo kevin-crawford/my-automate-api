@@ -78,29 +78,48 @@ router.put('/edit/:maintenanceId', jsonParser, (req, res) => {
 });
 
 // API CALL TO DELETE MAINTENANCE ITEM
-router.delete('/delete/:id', (req,res) => {
+router.delete('/delete/:id', jsonParser, (req,res) => {
+	console.log('REQUEST BODY--',req.body);
 	Maintenance
 			.findByIdAndRemove(req.params.id)
-			.then(() =>
-	Vehicle
-		// IN PROGRESS, find vehicleId in maintenance request body
-		.findById(req.body.vehicleId)
-		.then(function(vehicle){
-			let itemIndex = -1
-			for(let i = 0; i < vehicle.maintenance.length; i++){
-				if(vehicle.maintenance[i]._id == req.body.vehicleId){
-					itemIndex = i;
-				}
-			}
-			if( itemIndex !== -1) {
-				vehicle.maintenance.splice(itemIndex, 1)
-			}
-			return vehicle.save()
-		})
+			.then(() => {
+				Vehicle
+					.findById(req.body.vehicleId)
+					.then((vehicle) => {
+						let itemIndex = -1
+						console.log('VEHICLE', vehicle);
+						for(let i = 0; i < vehicle.maintenance.length; i++){
+							if(vehicle.maintenance[i]._id == req.body.vehicleId){
+								itemIndex = i;
+							}
+						}
+						if( itemIndex !== -1) {
+							vehicle.maintenance.splice(itemIndex, 1)
+						}
+						return vehicle.save()
+					})
+			})
+		// 	.then(() => 
+		// 		Vehicle
+		// // IN PROGRESS, find vehicleId in maintenance request body
+		// .findById(req.body.vehicleId)
+		// .then(function(vehicle){
+		// 	let itemIndex = -1
+		// 	console.log('VEHICLE', vehicle);
+		// 	for(let i = 0; i < vehicle.maintenance.length; i++){
+		// 		if(vehicle.maintenance[i]._id == req.body.vehicleId){
+		// 			itemIndex = i;
+		// 		}
+		// 	}
+		// 	if( itemIndex !== -1) {
+		// 		vehicle.maintenance.splice(itemIndex, 1)
+		// 	}
+		// 	return vehicle.save()
+		// })
 		.then((err) => {
 			console.log(err);
 			res.status(500).json({ error: 'Could not remove maintenanceId from vehicle'})
-		}))
+		})
 		.catch( err => {
 			console.log(err);
 			res.status(500).json({ error: 'Could not remove maintenance item'});
