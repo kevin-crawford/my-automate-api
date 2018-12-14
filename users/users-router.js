@@ -57,7 +57,7 @@ router.post('/signup', jsonParser, (req, res) => {
             location: nonTrimmedField
         });
     }
-    
+
     const sizedFields = {
         username: {
             min: 1
@@ -72,16 +72,16 @@ router.post('/signup', jsonParser, (req, res) => {
             max: 72
         }
     };
-    
+
     const tooSmallField = Object.keys(sizedFields).find(
         field =>
-        'min' in sizedFields[field] &&
-        req.body[field].trim().length < sizedFields[field].min
+            'min' in sizedFields[field] &&
+            req.body[field].trim().length < sizedFields[field].min
     );
     const tooLargeField = Object.keys(sizedFields).find(
         field =>
-        'max' in sizedFields[field] &&
-        req.body[field].trim().length > sizedFields[field].max
+            'max' in sizedFields[field] &&
+            req.body[field].trim().length > sizedFields[field].max
     );
 
     if (tooSmallField || tooLargeField) {
@@ -89,126 +89,124 @@ router.post('/signup', jsonParser, (req, res) => {
             code: 422,
             reason: 'ValidationError',
             message: tooSmallField
-            ? `Must be at least ${sizedFields[tooSmallField]
-            .min} characters long`
-            : `Must be at most ${sizedFields[tooLargeField]
-            .max} characters long`,
+                ? `Must be at least ${sizedFields[tooSmallField]
+                    .min} characters long`
+                : `Must be at most ${sizedFields[tooLargeField]
+                    .max} characters long`,
             location: tooSmallField || tooLargeField
         });
     }
 
-    let { username, password, email, firstName = '', lastName = ''} = req.body;
+    let { username, password, email, firstName = '', lastName = '' } = req.body;
     // email and password come in pre-trimmed, otherwise we throw an error
     // before this
     console.log(username);
     firstName.trim();
     lastName.trim();
     console.log(req.body)
-    return User.find({username})
+    return User.find({ username })
         .count()
         .then(count => {
-        if (count > 0) {
-            // There is an existing user with the same username
-            return Promise.reject({
-                code: 422,
-                reason: 'ValidationError',
-                message: 'username already taken',
-                location: 'username'
-            });
-        }
-        // If there is no existing user, hash the password
-        return User.hashPassword(password);
-    })
-        .then(hash => {
-        console.log(hash);
-        console.log('username',username);
-        return User.create({
-            username,
-            email,
-            password: hash,
-            firstName,
-            lastName
-        },
-    )
-        
-    })
-        .then(user => {
-        console.log(user,'user')
-        return res.status(201).json(user.serialize());
-    })
-        .catch(err => {
-        // Forward validation errors on to the client, otherwise give a 500
-        // error because something unexpected has happened
-        if (err.reason === 'ValidationError') {
-            return res.status(err.code).json(err);
-        }
-        res.status(500).json({code: 500, message: 'Internal server error'});
-    });
-});
-
-// Never expose all your users like below in a prod application
-// we're just doing this so we have a quick way to see
-// if we're creating users. keep in mind, you can also
-// verify this in the Mongo shell.
-router.get('/', (req, res) => {
-    return User.find()
-        .then(users => res.status(200).json(users.map(user => user.serialize())))
-        .catch(err => res.status(500).json({ message: 'Internal server error' }));
-});
-
-// POST to login a user
-
-router.post('/login', jsonParser, (req, res) => {
-    const requiredFields = ['username', 'password'];
-    const missingField = requiredFields.find(field => !(field in req.body));
-
-    if (missingField) {
-        return res.status(422).json({
-            code: 422,
-            reason: 'ValidationError',
-            message: 'Missing field',
-            location: missingField
-        });
-    };
-
-    let { username, password } = req.body;
-    // console.log(username, password);
-    let user;
-    User.findOne({ username })
-        .then(_user => {
-            user = _user;
-            if (!user) {
-                // Return a rejected promise so we break out of the chain of .thens.
-                // Any errors like this will be handled in the catch block.
+            if (count > 0) {
+                // There is an existing user with the same username
                 return Promise.reject({
+                    code: 422,
                     reason: 'ValidationError',
-                    message: 'Incorrect username or password'
+                    message: 'username already taken',
+                    location: 'username'
                 });
             }
-            return user.validatePassword(password);
+            // If there is no existing user, hash the password
+            return User.hashPassword(password);
         })
-        .then(isValid => {
-            if (!isValid) {
-                console.log('failed validation');
-                return Promise.reject({
-                    reason: 'ValidationError',
-                    message: 'Incorrect username or password'
-                });
-            }
-            console.log('validation successful');
+        .then(hash => {
+            console.log(hash);
+            console.log('username', username);
+            return User.create({
+                username,
+                email,
+                password: hash,
+                firstName,
+                lastName
+            })
+        })
+        .then(user => {
+            console.log(user, 'user')
             return res.status(201).json(user.serialize());
         })
         .catch(err => {
             // Forward validation errors on to the client, otherwise give a 500
             // error because something unexpected has happened
-            console.log(err.message);
             if (err.reason === 'ValidationError') {
-                return res.status(400).json(err);
+                return res.status(err.code).json(err);
             }
             res.status(500).json({ code: 500, message: 'Internal server error' });
-        });
-});
+        })
+    });
+
+    // Never expose all your users like below in a prod application
+    // we're just doing this so we have a quick way to see
+    // if we're creating users. keep in mind, you can also
+    // verify this in the Mongo shell.
+    router.get('/', (req, res) => {
+        return User.find()
+            .then(users => res.status(200).json(users.map(user => user.serialize())))
+            .catch(err => res.status(500).json({ message: 'Internal server error' }));
+    });
+
+    // POST to login a user
+
+    router.post('/login', jsonParser, (req, res) => {
+        const requiredFields = ['username', 'password'];
+        const missingField = requiredFields.find(field => !(field in req.body));
+
+        if (missingField) {
+            return res.status(422).json({
+                code: 422,
+                reason: 'ValidationError',
+                message: 'Missing field',
+                location: missingField
+            });
+        };
+
+        let { username, password } = req.body;
+        // console.log(username, password);
+        let user;
+        User.findOne({ username })
+            .then(_user => {
+                user = _user;
+                if (!user) {
+                    // Return a rejected promise so we break out of the chain of .thens.
+                    // Any errors like this will be handled in the catch block.
+                    return Promise.reject({
+                        reason: 'ValidationError',
+                        message: 'Incorrect username or password'
+                    });
+                }
+                return user.validatePassword(password);
+            })
+            .then(isValid => {
+                if (!isValid) {
+                    console.log('failed validation');
+                    return Promise.reject({
+                        reason: 'ValidationError',
+                        message: 'Incorrect username or password'
+                    });
+                }
+                console.log('validation successful');
+                return res.status(201).json(user.serialize());
+            })
+            .catch(err => {
+                // Forward validation errors on to the client, otherwise give a 500
+                // error because something unexpected has happened
+                console.log(err.message);
+                if (err.reason === 'ValidationError') {
+                    return res.status(400).json(err);
+                }
+                res.status(500).json({ code: 500, message: 'Internal server error' });
+            });
+    });
 
 
 
-module.exports = {router} ;
+    module.exports = { router };
