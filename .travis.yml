@@ -4,8 +4,7 @@ services:
 - mongodb
 deploy:
   provider: heroku
-  api_key:
-    secure: FzHb8EUZHHpwiy7Zor8mQ9I78E81EJOCGeKgVJedAc1gQWysocQwwcnDuvqAhAv6E9qhUoBaImOOWZ5BuuhRAOED/7uLbtSJu3qV6eaS5/lPyV3pBteP/U7ww8xIwFj4PnwFSOigPNnl9fPHADiMdsyTg50Dap0GnsNkB0WMpEb90kA+//YwLyLBG4pHETZI/p+aV60X2F3UtExSTg5jiIkXzsV+4jz5XH7h2IYFTSyjz1PoZWpcL8rU9L4fNiosEqZF8nIPgKJQDTr5WRWg0OWfsf/NQziCJMMmBg5nLAeKPQH6iZ3d7xkObJDrxCDy39LhkZD9tBqk2osMdxTxOmdDPmSm8TKL8YP1+a4+iGq7Vtvp0LJnUo1Fv/G7OHf+/c9MK1rwl1SurqUsgp9kX0pPBflzpeo/C7KjSfd69+Kd1yliXzgd4gBoo+jH1aQM890fVDfKVhlzdPLnRdNmMVnhfXQEdUuacEbG67VTDBx317q4U1lBY2X2iYLwFSngn5we7QIWnsA4rEja75AyBFM2x9Rs1RdXc6H2Xi7uPGMnMB2BzaI5Q4RpbrgTnikwjSwNtRxHVicryHAcqUTf4F1fqxHuMXMDQa/DEjSnn+f2d2HtqMRuoPxYOoDRd5xmafTBqPxA+oe0U/b0PM8jXlP8vSATTTU9eLLA/JKhB4I=
+  api_key: c1f2f40c-1ab2-4675-80ed-834069a69c5d
   app: intense-garden-46278
   on:
     repo: kdxcii/my-automate-api
