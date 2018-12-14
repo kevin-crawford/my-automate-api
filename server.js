@@ -13,12 +13,11 @@ const cors = require('cors');
 //------------ ROUTER IMPORTS --------------------///
 const { router: usersRouter }  = require('./users');
 const { router: vehiclesRouter} = require('./vehicles');
-const { router: maintenanceRouter, emailRouter } = require('./maintenance');
-// const reminderRouter = require('./maintenance/maintenance-emailer');
+const { router: maintenanceRouter } = require('./maintenance');
 
 //------- AUTH STRATEGIES -----------------------//
 const { router: authRouter, localStrategy, jwtStrategy } = require('./auth');
-// const authRouter = require('./auth/auth-router');
+
 
 mongoose.Promise = global.Promise;
 
@@ -53,8 +52,6 @@ app.use(
 	})
 );
 
-// app.use(bodyParser.json());
-
 // SERVE STATIC ASSETS
 app.use(express.static("public"));
 
@@ -67,7 +64,6 @@ app.use("/users/", usersRouter);
 app.use("/auth/", authRouter);
 app.use("/vehicles/", vehiclesRouter);
 app.use("/maintenance/", maintenanceRouter);
-app.use("/email/", emailRouter);
 
 // A protected endpoint which needs a valid JWT to access it
 app.get('/protected', jwtAuth, (req, res) => {
