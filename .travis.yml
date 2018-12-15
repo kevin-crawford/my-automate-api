@@ -4,7 +4,6 @@ services:
 - mongodb
 deploy:
   provider: heroku
-  api_key: c1f2f40c-1ab2-4675-80ed-834069a69c5d
   app: intense-garden-46278
   on:
     repo: kdxcii/my-automate-api
