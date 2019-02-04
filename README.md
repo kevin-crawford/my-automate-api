@@ -1,11 +1,10 @@
-# AutoMate
+# Automate
 
 ### Live App: https://fast-meadow-25618.herokuapp.com/
-### Link To Back-end API: https://github.com/kdxcii/my-automate-api
 
 ### Summary:
 
-<p>AutoMate is intended to help vehicle owners ( cars, recreational vehicles, motorcycles ) track and log their vehicle maintenance in one uniform web application. Add vehicles and start tracking by adding the most recent vehicle maintenance records. When you forget when the last time you had done a particular maintenance, use this app for reference.</p>
+<p>Automate is intended to help vehicle owners ( cars, recreational vehicles, motorcycles ) track and log their vehicle maintenance in one uniform web application. Add vehicles and start tracking by adding the most recent vehicle maintenance records. When you forget when the last time you had done a particular maintenance, use this app for reference.</p>
 
 
 ### Landing Page
