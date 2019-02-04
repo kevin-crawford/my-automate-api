@@ -1,6 +1,6 @@
 # Automate
 
-### Live App: https://fast-meadow-25618.herokuapp.com/
+### Live App: https://automateclient.herokuapp.com/
 
 ### Summary:
 
